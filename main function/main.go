@@ -21,9 +21,18 @@ func main() {
 		}
 		data = append(data, number)
 	}
+	counter := 0
+	if len(data) == 0 { // check if file is empty
+		fmt.Println("There is no data to work with!")
+		return
+	}
+	for range data {
+		counter++
+	}
 	lower, upper := NextValueRange(data)
 	cleandata := RemoveOutliers(data)
 	Prediction(cleandata, upper, lower)
+	fmt.Println("Data set count: ", counter)
 }
 
 func RemoveOutliers(d []float64) []float64 {
@@ -31,16 +40,17 @@ func RemoveOutliers(d []float64) []float64 {
 	// make a copy of the slice so that the slice outside function is not affected
 	copyofd := make([]float64, len(d)) 
 	copy(copyofd, d)
+	sorted := guess.Sort(copyofd)
 	//use q1 and q3 to determine the possible range of the dataset and remove outliers
-	q1 := math.Round(guess.Median(copyofd[:len(copyofd)/2]))
-	q2 := math.Round(guess.Median(copyofd[len(copyofd)/2:]))
+	q1 := math.Round(guess.Median(sorted[:len(sorted)/2]))
+	q2 := math.Round(guess.Median(sorted[len(sorted)/2:]))
 	iqr := q2 - q1
-	upperBoundary := q2 + 1.5*iqr
-	lowerBoundary := q1 - 1.5*iqr
+	upperBoundary := q2 + 3*iqr
+	lowerBoundary := q1 - 3*iqr
 
 	for _, num := range d {
 		if lowerBoundary > num || num > upperBoundary {
-			num = math.Round(guess.Median(copyofd))
+			num = math.Round(guess.Median(sorted))
 		}
 	clean = append(clean, num)
 	}
@@ -58,7 +68,7 @@ func NextValueRange(d []float64) (float64, float64) {
 
 func Prediction(d []float64, u float64, l float64) {
 	count := 0
-	for i := range d {
+	for i := range d[:len(d)-1] {
 		if d[i] == d[len(d)-1] {
 			continue
 		}

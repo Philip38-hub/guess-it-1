@@ -10,7 +10,11 @@ import (
 )
 
 func main() {
-	file, _ := os.Open("test.txt")
+	file, err := os.Open("test.txt")
+	if err != nil {
+		fmt.Println("Error Opening file! Check file's name or path and try again!")
+		os.Exit(0)
+	}
 	scanner := bufio.NewScanner(file)
 	var data []float64
 	for scanner.Scan() {

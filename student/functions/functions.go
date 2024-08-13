@@ -3,7 +3,6 @@ package guess
 import "math"
 
 func Median(x []float64) float64 {
-	// data := Sort(x)
 	out := 0.0
 	if len(x)%2 == 1 {
 		out = x[(len(x) / 2)]
